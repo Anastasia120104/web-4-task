@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: web-4-task
+    envVars:
+      - key: PORT
+        value: "5000"
+        scope: RUN_TIME
+    buildCommand: go build -o main .
+    startCommand: ./main

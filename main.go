@@ -20,11 +20,10 @@ func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "x-test,ngrok-skip-browser-warning,Content-Type,Accept,Access-Control-Allow-Headers")
 
-		if r.Method == "OPTIONS" {
+		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-
 		handler(w, r)
 	}
 }
@@ -33,14 +32,19 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	body, _ := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
-	response := Response{
+	resp := Response{
 		Message: "269018",
 		XResult: r.Header.Get("x-test"),
 		XBody:   string(body),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(resp)
+}
+
+func healthzHandler(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
 
 func main() {
@@ -50,5 +54,8 @@ func main() {
 	}
 
 	http.HandleFunc("/result4/", enableCORS(resultHandler))
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, http.DefaultServeMux))
+	http.HandleFunc("/healthz", healthzHandler) // или на "/"
+
+	log.Printf("Listening on :%s…", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
