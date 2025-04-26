@@ -50,5 +50,5 @@ func main() {
 	}
 
 	http.HandleFunc("/result4/", enableCORS(resultHandler))
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, http.DefaultServeMux))
 }
