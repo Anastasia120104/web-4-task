@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Response struct {
@@ -43,7 +44,11 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	http.HandleFunc("/result4/", enableCORS(resultHandler))
-	log.Printf("Server starting on http://0.0.0.0:5000")
-	log.Fatal(http.ListenAndServe("0.0.0.0:5000", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
