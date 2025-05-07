@@ -33,7 +33,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	resp := Response{
-		Message: "269018",
+		Message: "dorinasty1201",
 		XResult: r.Header.Get("x-test"),
 		XBody:   string(body),
 	}
